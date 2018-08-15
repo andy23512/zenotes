@@ -10,11 +10,75 @@
 </template>
 
 <script>
+require('milligram')
+
+const SKEY = "ZENOTES";
+
 export default {
   name: 'app',
-  data: function() {
-    return {}
+  data() {
+    return {
+      notes: [],
+      selected: undefined
+    }
+  },
+  methods: { addNote, selectNote },
+  mounted() {
+    const vm = this;
+    loadNotes(this);
+    this.$watch(
+      watchable.bind(this),
+      onChange.bind(this),
+      { deep: true }
+    );
   }
+}
+
+function watchable() {
+  if (!this.selected) return undefined;
+  return { id: this.selected.id, body: this.selected.body };
+}
+
+function onChange(val, prev) {
+  if (!prev) return;
+  save(this.notes);
+}
+
+function loadNotes(vm) {
+  chrome.storage.sync.get(SKEY, ({ [SKEY]: list = [] }) => {
+    // Push all notes to our array with ES6 fancy splat syntax
+    vm.notes.push(...list);
+    // Select the most recent note
+    vm.selectNote(list[0])
+  })
+}
+
+function selectNote(note) {
+  if (note === this.selected) return;
+  this.selected = note;
+}
+
+function addNote() {
+  const note = { id: guid(), body: '# ' };
+  this.notes.unshift(note);
+  this.selectNote(note);
+  save(this.notes);
+}
+
+function save(notes) {
+  if(!notes) return;
+  chrome.storage.sync.set({ [SKEY]: notes });
+}
+
+// generate unique IDs
+function guid() {
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+}
+
+function s4() {
+  return Math.floor((1 + Math.random()) * 0x10000)
+    .toString(16)
+    .substring(1);
 }
 </script>
 
