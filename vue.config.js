@@ -16,8 +16,6 @@ module.exports = {
       .plugin('provide')
       .use(webpack.ProvidePlugin, [{
       }])
-    config.plugin('copy')
-      .use(CopyWebpackPlugin, [[{from: 'src/manifest.json', to: '.'}]])
 
     if(config.get('mode') === 'production') {
       const { join } = require('path')
