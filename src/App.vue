@@ -1,28 +1,22 @@
-<template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+<template lang="pug">
+.notes.row
+  .column.column-20.sidebar
+    h5
+      a(href='#' @click='addNote') +
+    ul
+      li(v-for='note in notes' :key='note.id' :class='{ active: note === selected }' @click='selectNote(note)') {{note.body}}
+  .column.column-80(style='position: relative')
+    textarea(v-if='selected' v-model='selected.body' placeholder='Edit me')
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
 export default {
   name: 'app',
-  components: {
-    HelloWorld
+  data: function() {
+    return {}
   }
 }
 </script>
 
 <style lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
 </style>
