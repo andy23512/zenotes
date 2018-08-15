@@ -6,16 +6,20 @@
     ul
       li(v-for='note in notes' :key='note.id' :class='{ active: note === selected }' @click='selectNote(note)') {{note.body}}
   .column.column-80(style='position: relative')
-    textarea(v-if='selected' v-model='selected.body' placeholder='Edit me')
+    transition(name="fade" appear)
+      v-editor(v-if='selected' v-model='selected.body' :key="selected.id")
 </template>
 
 <script>
+import VEditor from './components/Editor.vue'
+
 require('milligram')
 
 const SKEY = "ZENOTES";
 
 export default {
   name: 'app',
+  components: {VEditor},
   data() {
     return {
       notes: [],
@@ -83,4 +87,18 @@ function s4() {
 </script>
 
 <style lang="scss">
+.note-area {
+  padding-left: 20px;
+  position: absolute;
+  width: 100%;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .2s ease-in, transform .2s ease-in;
+}
+
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+  transform: translateY(-30px);
+}
 </style>
